@@ -1,0 +1,14 @@
+﻿{
+	"Id": "PC_TWWH_Balthasar_Gelt",
+	"DisplayName": "PC Male Balthasar Gelt Soundset",
+	"Author": "DarthParametric",
+	"Version": "1.0.0",
+    "GameVersion": "2.3.3",
+    "ManagerVersion": "0.28.2",
+	"Requirements": [],
+    "LoadAfter": [],
+	"AssemblyName": "PC_TWWH_Balthasar_Gelt.dll",
+	"EntryMethod": "PC_TWWH_Balthasar_Gelt.Main.Load",
+	"Repository": "",
+	"HomePage": ""
+}
