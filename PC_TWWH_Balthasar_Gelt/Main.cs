@@ -93,6 +93,7 @@ public static class Main
 			}
 		}
 
+		class NoCastChants : BlueprintComponent { }
 
 		[HarmonyPatch(typeof(BlueprintsCache), nameof(BlueprintsCache.Init))]
 		[HarmonyPostfix]
@@ -983,8 +984,9 @@ public static class Main
 					ShowOnScreen = false,
 					AnimationEvent = MappedAnimationEventType.Precast
 				},
-			]
-		}
+			],
+		},
+		new NoCastChants()
 			];
 
 			ResourcesLibrary.BlueprintsCache.AddCachedBlueprint(blueprint.AssetGuid, blueprint);
