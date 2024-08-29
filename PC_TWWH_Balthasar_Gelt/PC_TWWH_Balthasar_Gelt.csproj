@@ -58,12 +58,12 @@
 	</Target>
 	<Target Name="DeleteFiles" BeforeTargets="Clean">
 		<ItemGroup>
-			<Files1 Include="GamePath.props" />
+			<PropsFile Include="GamePath.props" />
 		</ItemGroup>
 		<ItemGroup>
-			<Files2 Include="$(MSBuildProjectDirectory)\$(OutputPath)\..\*.zip" />
+			<BuildDir Include="$(MSBuildProjectDirectory)\$(OutputPath)\..\*.zip" />
 		</ItemGroup>
 		
-		<Delete Files="@(Files1);@(Files2)" />
+		<Delete Files="@(PropsFile);@(BuildDir)" />
 	</Target>
 </Project>
