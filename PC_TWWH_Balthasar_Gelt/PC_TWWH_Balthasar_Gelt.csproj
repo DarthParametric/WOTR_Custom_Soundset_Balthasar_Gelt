@@ -28,13 +28,33 @@
 		<None Include="$(SolutionDir)WrathWwiseTemplate\GeneratedSoundBanks\Windows\**\*.bnk" Exclude="$(SolutionDir)WrathWwiseTemplate\GeneratedSoundBanks\Windows\Init.bnk" TargetPath="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(SolutionDir)WrathWwiseTemplate\GeneratedSoundBanks\Windows\SoundbanksInfo.xml" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
+	<Target Name="EmptyModDir" BeforeTargets="Build">
+		<ItemGroup>
+			<ModDir Include="$(WrathInstallDir)\Mods\$(AssemblyName)\*.*" />
+		</ItemGroup>
+		
+		<Delete Files="@(ModDir)" />
+	</Target>
 	<Target Name="Deploy" AfterTargets="Build">
 		<ItemGroup>
 			<Files Include="$(TargetDir)\**\*.*" />
 		</ItemGroup>
-
-		<Copy SourceFiles="@(Files)" DestinationFiles="@(Files->'$(WrathInstallDir)\Mods\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" DestinationFile="$(MSBuildProjectDirectory)\$(OutputPath)\..\$(AssemblyName)_v$(Version).zip" Overwrite="true" />
+		
+		<Copy
+			SourceFiles="@(Files)"
+			DestinationFiles="@(Files->'$(WrathInstallDir)\Mods\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')"
+			OverwriteReadOnlyFiles="true"
+			SkipUnchangedFiles="false"
+		/>
+		
+		<MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" />
+		<Move SourceFiles="@(Files)" DestinationFolder="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)"/>
+		
+		<ZipDirectory
+			SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)"
+			DestinationFile="$(SolutionDir)Export\$(AssemblyName)_v$(Version).zip"
+			Overwrite="true"
+		/>
 	</Target>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
@@ -61,9 +81,12 @@
 			<PropsFile Include="GamePath.props" />
 		</ItemGroup>
 		<ItemGroup>
-			<BuildDir Include="$(MSBuildProjectDirectory)\$(OutputPath)\..\*.zip" />
+			<ExportDir Include="$(SolutionDir)Export\*.zip" />
 		</ItemGroup>
 		
-		<Delete Files="@(PropsFile);@(BuildDir)" />
+		<Delete Files="@(PropsFile);@(ExportDir)" />
+	</Target>
+	<Target Name="PostClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(OutDir)"/>
 	</Target>
 </Project>

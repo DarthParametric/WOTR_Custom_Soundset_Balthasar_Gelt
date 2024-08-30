@@ -108,7 +108,7 @@ public static class Main
 			var blueprint = new BlueprintUnitAsksList
 			{
 				AssetGuid = new(System.Guid.Parse("e99a8d6c75a64928ad5761567fc36bfe")),
-				name = "{sProjectName}_Barks",
+				name = $"{sProjectName}_Barks",
 				DisplayName = new() { m_Key = $"{sProjectName}" }
 			};
 
@@ -116,8 +116,8 @@ public static class Main
 			[
 				new NoCastChants()
 			{
-					name = "NoCastChants",
-					Disabled = false,
+				name = "NoCastChants",
+				Disabled = false,
 			},
 
 				new UnitAsksComponent()
@@ -1004,6 +1004,8 @@ public static class Main
 					.ToArray();
 		}
 
+		// In order to prevent the vanilla casting chants from playing when using custom chant events, the default check the
+		// game does on the caster is patched, flagging the caster as silent if they have the No Chants blueprint component.
 		[HarmonyPatch(typeof(UnitEntityData), nameof(UnitEntityData.SilentCaster), MethodType.Getter)]
 		[HarmonyPostfix]
 		static void Patch(ref bool __result, UnitEntityData __instance)

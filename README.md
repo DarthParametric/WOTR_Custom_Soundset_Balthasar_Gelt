@@ -13,9 +13,18 @@ Also includes a couple of custom portrait sets, if required.
 1. Run your game.
 1. The custom soundset will appear in the character creator Voice list for males after all the vanilla voice sets:
 
-![Character creator voice selection screenshot](https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/blob/master/img/Gelt_Soundset_Character_Creator_List.png)
+<p align="center">
+  <img src="https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/blob/master/img/Gelt_Soundset_Character_Creator_List.png?raw=true" alt="Character creator voice selection screenshot"/>
+</p>
+
+# Notes
+- Just like vanilla chants, the custom casting chants won't play when a spell's casting animation is disabled. For example, a Quickened spell.
+- Certain lines may be overly load due to the nature of the source audio. Please report anything obnoxious so it can be manually adjusted.
+- The source audio lacks any sort of whispering or quiet lines, so I have simply lowered the volume on the stealth lines.
+- Similarly, there's a lack of diversity or even anything at all for certain lines. If anyone skilled with AI voice generation is willing to take a crack at creating new custom lines, let me know.
 
 # Thanks & Acknowledgements
 - Uses [OwlcatNuGetTemplates](https://github.com/xADDBx/OwlcatNuGetTemplates) as a basis.
 - microsoftenator2022 - Provided lots of help with troubleshooting the Wwise setup (as well as extensive work on the original wrathsoundmod template) and provided corrections, fixes and suggestions for various coding issues, especially disabling the vanilla casting chants.
 - Everyone in the `#mod-dev-technical` channel of the Owlcat Discord server for various modding-related discussions and suggestions, help troubleshooting issues, and answering general questions.
+- Original audio from Creative Assembly's Total War Warhammer.
