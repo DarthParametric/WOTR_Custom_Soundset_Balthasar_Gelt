@@ -117,7 +117,6 @@ public static class Main
 				new NoCastChants()
 			{
 				name = "NoCastChants",
-				Disabled = false,
 			},
 
 				new UnitAsksComponent()
@@ -866,7 +865,20 @@ public static class Main
 					},
 					new()
 					{
-						Entries = [],
+						Entries =
+						[
+							new()
+							{
+								Text = null,
+								AkEvent = $"{sProjectName}_CastDirect",
+								RandomWeight = 0.0f,
+								ExcludeTime = 0,
+								m_RequiredFlags = [],
+								m_ExcludedFlags = [],
+								m_RequiredEtudes = null,
+								m_ExcludedEtudes = null
+							}
+						],
 						Cooldown = 0.0f,
 						InterruptOthers = true,
 						DelayMin = 0.0f,
@@ -949,7 +961,20 @@ public static class Main
 					},
 					new()
 					{
-						Entries = [],
+						Entries =
+						[
+							new()
+							{
+								Text = null,
+								AkEvent = $"{sProjectName}_CastYourself",
+								RandomWeight = 0.0f,
+								ExcludeTime = 0,
+								m_RequiredFlags = [],
+								m_ExcludedFlags = [],
+								m_RequiredEtudes = null,
+								m_ExcludedEtudes = null
+							}
+						],
 						Cooldown = 0.0f,
 						InterruptOthers = true,
 						DelayMin = 0.0f,
@@ -984,7 +1009,20 @@ public static class Main
 					},
 					new()
 					{
-						Entries = [],
+						Entries =
+						[
+							new()
+							{
+								Text = null,
+								AkEvent = $"{sProjectName}_Precast",
+								RandomWeight = 0.0f,
+								ExcludeTime = 0,
+								m_RequiredFlags = [],
+								m_ExcludedFlags = [],
+								m_RequiredEtudes = null,
+								m_ExcludedEtudes = null
+							}
+						],
 						Cooldown = 0.0f,
 						InterruptOthers = true,
 						DelayMin = 0.0f,
@@ -1012,9 +1050,6 @@ public static class Main
 		{
 			if (__instance.Descriptor.Asks.GetComponent<NoCastChants>() is not null)
 			{
-#if DEBUG
-				log.Log($"Found NoCastChants component on {__instance.CharacterName}, flagging as a silent caster to allow for customised casting VO.");
-#endif
 				__result = true;
 			}
 		}
