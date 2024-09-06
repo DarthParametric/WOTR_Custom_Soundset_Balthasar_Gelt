@@ -5,7 +5,7 @@
 		<TargetFramework>net481</TargetFramework>
 		<AssemblyName>PC_TWWH_Balthasar_Gelt</AssemblyName>
 		<Description>PC Male Balthasar Gelt Soundset</Description>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>PC_TWWH_Balthasar_Gelt</RootNamespace>
