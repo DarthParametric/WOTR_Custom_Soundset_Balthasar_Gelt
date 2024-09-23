@@ -11,9 +11,10 @@ Also includes a couple of custom portrait sets, if required.
 1. Download [PC Male Balthasar Gelt Soundset](https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/releases/latest).
 1. Drag the mod zip into Unity Mod Manager.
 1. Run your game.
-1. The custom soundset will appear in the character creator Voice list for males after all the vanilla voice sets:
-
-<p align="center"><img src="img/Gelt_Soundset_Character_Creator_List.png?raw=true" alt="Character creator voice selection screenshot"/></p>
+1. There is an optional setting in UMM that allows you to adjust the frequency of the movement barks, as these are quite infrequent by default:
+   <p align="center"><img src="img/Gelt_Soundset_UMM_Options.png?raw=true" alt="UMM bark config options screenshot" width="500" height="115"/></p>
+1. The custom soundset will appear in the character creator Voice list for females after all the vanilla soundsets:
+   <p align="center"><img src="img/Gelt_Soundset_Character_Creator_List.png?raw=true" alt="Character creator voice selection screenshot"/></p>
 
 # Notes
 - Just like vanilla chants, the custom casting chants won't play when a spell's casting animation is disabled. For example, a Quickened spell.
