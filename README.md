@@ -1,3 +1,5 @@
+<p align="center"><img src="img/Gelt_Soundset_Header.png?raw=true" alt="Header image"/></p>
+
 # About
 
 A mod for Owlcat's Pathfinder: Wrath of the Righteous.
