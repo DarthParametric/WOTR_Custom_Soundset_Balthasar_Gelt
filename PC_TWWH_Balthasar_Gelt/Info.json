@@ -2,13 +2,13 @@
 	"Id": "PC_TWWH_Balthasar_Gelt",
 	"DisplayName": "PC Male Balthasar Gelt Soundset",
 	"Author": "DarthParametric",
-	"Version": "1.0.1",
+	"Version": "1.1.0",
     "GameVersion": "2.4.0",
-    "ManagerVersion": "0.28.2",
+    "ManagerVersion": "0.29.0",
 	"Requirements": [],
     "LoadAfter": [],
 	"AssemblyName": "PC_TWWH_Balthasar_Gelt.dll",
 	"EntryMethod": "PC_TWWH_Balthasar_Gelt.Main.Load",
-	"Repository": "",
-	"HomePage": ""
+	"HomePage": "https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt",
+	"Repository": "https://raw.githubusercontent.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/master/PC_TWWH_Balthasar_Gelt/Repository.json"
 }

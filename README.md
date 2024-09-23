@@ -13,9 +13,7 @@ Also includes a couple of custom portrait sets, if required.
 1. Run your game.
 1. The custom soundset will appear in the character creator Voice list for males after all the vanilla voice sets:
 
-<p align="center">
-  <img src="https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/blob/master/img/Gelt_Soundset_Character_Creator_List.png?raw=true" alt="Character creator voice selection screenshot"/>
-</p>
+<p align="center"><img src="img/Gelt_Soundset_Character_Creator_List.png?raw=true" alt="Character creator voice selection screenshot"/></p>
 
 # Notes
 - Just like vanilla chants, the custom casting chants won't play when a spell's casting animation is disabled. For example, a Quickened spell.
@@ -26,7 +24,7 @@ Also includes a couple of custom portrait sets, if required.
 - If you wish to use the optional included custom portraits, copy the folders into `%UserProfile%\AppData\LocalLow\Owlcat Games\Pathfinder Wrath of the Righteous\Portraits` (on Windows).
 
 # Thanks & Acknowledgements
-- Uses [OwlcatNuGetTemplates](https://github.com/xADDBx/OwlcatNuGetTemplates) as a basis.
-- microsoftenator2022 - Provided lots of help with troubleshooting the Wwise setup (as well as extensive work on the original `wrathsoundmod` template) and provided corrections, fixes and suggestions for various coding issues, especially disabling the vanilla casting chants.
+- Uses the `wrathsoundvoicemod` mod template from [OwlcatNuGetTemplates](https://github.com/xADDBx/OwlcatNuGetTemplates) as a basis.
+- microsoftenator2022 - Provided lots of help with troubleshooting the original Wwise and project setup, leading to the creation of the dedicated `wrathsoundvoicemod` template (as well as extensive work on the original `wrathsoundmod` template) and provided corrections, fixes and suggestions for various coding issues, especially disabling the vanilla casting chants.
 - Everyone in the `#mod-dev-technical` channel of the Owlcat Discord server for various modding-related discussions and suggestions, help troubleshooting issues, and answering general questions.
 - Original audio taken from Creative Assembly's Total War Warhammer.

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Blueprints.Root;
@@ -6,28 +6,88 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Localization;
 using Kingmaker.Sound;
 using Kingmaker.Visual.Sound;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System;
-using UnityModManagerNet;
+using UnityEngine;
+using static UnityModManagerNet.UnityModManager;
 
 namespace PC_TWWH_Balthasar_Gelt;
 
-public static class Main
-{
+public static class Main {
 	internal static Harmony HarmonyInstance;
-	internal static UnityModManager.ModEntry.ModLogger log;
-	public static bool Enabled;
+	internal static ModEntry.ModLogger log;
+	internal static string CDText;
+	internal static string ChText;
+	internal static float MoveCooldownSlider;
+	internal static int MoveChanceSlider;
+	internal static Settings settings;
+	internal static ModEntry modEntry;
 
-	public static bool Load(UnityModManager.ModEntry modEntry)
+	public static bool Load(ModEntry modEntry)
 	{
+		Main.modEntry = modEntry;
 		log = modEntry.Logger;
+		modEntry.OnGUI = OnGUI;
+		modEntry.OnSaveGUI = OnSaveGUI;
 		HarmonyInstance = new Harmony(modEntry.Info.Id);
+		settings = Settings.Load<Settings>(modEntry);
+		CDText = settings.MoveCooldown.ToString();
 		HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
-
 		return true;
+	}
+
+	static void OnSaveGUI(ModEntry modEntry)
+	{
+		settings.Save(modEntry);
+	}
+
+	public static void OnGUI(ModEntry modEntry)
+	{
+		GUILayout.Label("<b>Adjust Movement Bark Values</b>", GUILayout.ExpandWidth(false));
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Move bark cooldown (secs):", GUILayout.ExpandWidth(false));
+		GUILayout.Space(10f);
+		MoveCooldownSlider = GUILayout.HorizontalSlider(settings.MoveCooldown, 0f, 20f, GUILayout.Width(140f));
+		GUILayout.Space(10f);
+		CDText = GUILayout.TextField(MoveCooldownSlider.ToString("0.0"), GUILayout.Width(50f));
+		GUILayout.Space(10f);
+		GUILayout.Label("(Default: 10.0)", GUILayout.ExpandWidth(false));
+		if (float.TryParse(CDText, out float MoveCDNew))
+		{
+			if (MoveCDNew > 20f) { MoveCDNew = 20f; }
+			settings.MoveCooldown = MoveCDNew;
+		}
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Move bark proc chance (%):", GUILayout.ExpandWidth(false));
+		GUILayout.Space(10f);
+		MoveChanceSlider = (int)Math.Round(GUILayout.HorizontalSlider(settings.MoveChance * 100, 0, 100, GUILayout.Width(140f)));
+		GUILayout.Space(10f);
+		ChText = GUILayout.TextField(MoveChanceSlider.ToString(), 3, GUILayout.Width(50f));
+		GUILayout.Space(10f);
+		GUILayout.Label("(Default: 10%)", GUILayout.ExpandWidth(false));
+		if (float.TryParse(ChText, out float MoveChNew))
+		{
+			MoveChNew /= 100;
+			if (MoveChNew > 1f) { MoveChNew = 1f; }
+			settings.MoveChance = MoveChNew;
+		}
+		GUILayout.EndHorizontal();
+
+		if (GUILayout.Button("Apply Changes", GUILayout.ExpandWidth(false)))
+		{
+			if (!float.IsNaN(MoveCDNew) && !float.IsNaN(MoveChNew))
+			{
+				settings.MoveCooldown = MoveCDNew;
+				settings.MoveChance = MoveChNew;
+				log.Log($"Modifying movement bark settings. Cooldown: {MoveCDNew:0.0}s, Chance: {MoveChNew * 100}%");
+				OnSaveGUI(modEntry);
+				HarmonyInstance.UnpatchAll(modEntry.Info.Id);
+				HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+			}
+		}
+
+		GUILayout.Label("<i>N.B.: May require a game restart to take effect</i>", GUILayout.ExpandWidth(false));
 	}
 
 	// Create a new blueprint component to be added to the barks blueprint. This will be checked to
@@ -38,63 +98,31 @@ public static class Main
 	[HarmonyPatch]
 	public static class Soundbanks
 	{
-		public static readonly HashSet<uint> LoadedBankIds = [];
-
 		[HarmonyPatch(typeof(AkAudioService), nameof(AkAudioService.Initialize))]
 		[HarmonyPostfix]
-		public static void LoadSoundbanks()
+		public static void AddBankPaths()
 		{
 			var banksPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-			try
-			{
-				log.Log($"Scanning the BNK folder ({banksPath})");
-				AkSoundEngine.AddBasePath(banksPath);
-
-				foreach (var f in Directory.EnumerateFiles(banksPath, "*.bnk"))
-				{
-					var bankName = Path.GetFileName(f);
-					var akResult = AkSoundEngine.LoadBank(bankName, out var bankId);
-
-					if (bankName == "Init.bnk")
-						throw new InvalidOperationException("Do not include Init.bnk");
-
-					if (akResult == AKRESULT.AK_BankAlreadyLoaded)
-						continue;
-
-					log.Log($"Loading soundbank {f}");
-
-					if (akResult == AKRESULT.AK_Success)
-					{
-						LoadedBankIds.Add(bankId);
-					}
-					else
-					{
-						log.Error($"Loading soundbank {f} failed with result {akResult}");
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				log.LogException(e);
-				UnloadSoundbanks();
-			}
+			AkSoundEngine.AddBasePath(banksPath);
 		}
 
-		public static void UnloadSoundbanks()
+		const string PreviewName = "PC_TWWH_Balthasar_Gelt_Test";
+		static readonly uint TestEventId = AkSoundEngine.GetIDFromString(PreviewName);
+
+		[HarmonyPatch(typeof(UnitAsksComponent), nameof(UnitAsksComponent.PlayPreview))]
+		[HarmonyPrefix]
+		static bool LoadPreviewBank(UnitAsksComponent __instance)
 		{
-			foreach (var bankId in LoadedBankIds)
-			{
-				try
-				{
-					AkSoundEngine.UnloadBank(bankId, IntPtr.Zero);
-					LoadedBankIds.Remove(bankId);
-				}
-				catch (Exception e)
-				{
-					log.LogException(e);
-				}
-			}
+			if (__instance.PreviewSound is not PreviewName)
+				return true;
+
+			if (!SoundBanksManager.s_Handles.Any(handle => handle.Key is PreviewName))
+				SoundBanksManager.LoadBankSync(PreviewName);
+
+			GameObject gameObject = Game.Instance.UI.Common.gameObject;
+			SoundEventsManager.PostEvent(TestEventId, gameObject);
+
+			return false;
 		}
 
 		[HarmonyPatch(typeof(BlueprintsCache), nameof(BlueprintsCache.Init))]
@@ -107,25 +135,20 @@ public static class Main
 
 			var blueprint = new BlueprintUnitAsksList
 			{
-				AssetGuid = new(System.Guid.Parse("e99a8d6c75a64928ad5761567fc36bfe")),
+				AssetGuid = new(Guid.Parse("e99a8d6c75a64928ad5761567fc36bfe")),
 				name = $"{sProjectName}_Barks",
 				DisplayName = new() { m_Key = $"{sProjectName}" }
 			};
 
 			blueprint.ComponentsArray =
 			[
-				new NoCastChants()
-			{
-				name = "NoCastChants",
-			},
+				new NoCastChants() { },
 
 				new UnitAsksComponent()
 			{
 				OwnerBlueprint = blueprint,
 
-				// Since the blueprint is added manually by the mod, remove the usual reference
-				// to the bank name to prevent a Wwise "already loaded" error.
-				SoundBanks = [],
+				SoundBanks = [ $"{sProjectName}_GVR_ENG" ],
 				PreviewSound = $"{sProjectName}_Test",
 				Aggro = new()
 				{
@@ -481,11 +504,11 @@ public static class Main
 							m_ExcludedEtudes = null
 						}
 					],
-					Cooldown = 10.0f,
+					Cooldown = settings.MoveCooldown, // Default Cooldown value is 10s. Make it user-adjustable from 0-20s instead of fixed.
 					InterruptOthers = false,
 					DelayMin = 0.0f,
 					DelayMax = 0.0f,
-					Chance = 0.1f,
+					Chance = settings.MoveChance, // Default Chance value is 10%. Make it user-adjustable from 0-100% instead of fixed.
 					ShowOnScreen = false
 				},
 				Selected = new()
