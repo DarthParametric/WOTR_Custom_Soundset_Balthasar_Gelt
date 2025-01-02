@@ -10,9 +10,9 @@ Also includes a couple of custom portrait sets, if required.
 
 # Install
 1. Download and install [Unity Mod Manager](https://www.nexusmods.com/site/mods/21) and set it up for WOTR ("Pathfinder Second Adventure").
-1. Download the latest version of the mod from [Github](https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/releases/latest) or [Nexus Mods](https://www.nexusmods.com/pathfinderwrathoftherighteous/mods/713).
-1. Download the latest version of ModMenu from [Github](https://github.com/CasDragon/ModMenu/releases/latest).
-1. Drag the mod zips into Unity Mod Manager to install.
+1. Download the latest version of the mod from [Github](https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/releases/latest) or [Nexus Mods](https://www.nexusmods.com/pathfinderwrathoftherighteous/mods/713). Alternatively, it is now also available via [ModFinder](https://github.com/Pathfinder-WOTR-Modding-Community/ModFinder/releases/latest).
+1. Download the latest version of ModMenu from [Github](https://github.com/CasDragon/ModMenu/releases/latest) or via [ModFinder](https://github.com/Pathfinder-WOTR-Modding-Community/ModFinder/releases/latest).
+1. Install both mods manually, via UMM, or via ModFinder.
 1. Run your game.
 1. There is an optional setting in ModMenu that allows you to adjust the frequency of the movement barks, as these are quite infrequent by default:
    <p align="center"><img src="img/Gelt_Soundset_MM_Options.png?raw=true" alt="ModMenu bark config options screenshot" width="500" height="130"/></p>
