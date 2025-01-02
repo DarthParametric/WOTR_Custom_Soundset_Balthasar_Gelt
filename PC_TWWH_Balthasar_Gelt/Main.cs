@@ -14,80 +14,22 @@ namespace PC_TWWH_Balthasar_Gelt;
 public static class Main {
 	internal static Harmony HarmonyInstance;
 	internal static ModEntry.ModLogger log;
-	internal static string CDText;
-	internal static string ChText;
-	internal static float MoveCooldownSlider;
-	internal static int MoveChanceSlider;
-	internal static Settings settings;
 	internal static ModEntry modEntry;
 
 	public static bool Load(ModEntry modEntry)
 	{
 		Main.modEntry = modEntry;
 		log = modEntry.Logger;
-		modEntry.OnGUI = OnGUI;
-		modEntry.OnSaveGUI = OnSaveGUI;
 		HarmonyInstance = new Harmony(modEntry.Info.Id);
-		settings = Settings.Load<Settings>(modEntry);
-		CDText = settings.MoveCooldown.ToString();
 		HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
 		return true;
 	}
 
-	static void OnSaveGUI(ModEntry modEntry)
+	public static void LogDebug(string message)
 	{
-		settings.Save(modEntry);
-	}
-
-	public static void OnGUI(ModEntry modEntry)
-	{
-		GUILayout.Label("<b>Adjust Movement Bark Values</b>", GUILayout.ExpandWidth(false));
-
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Move bark cooldown (secs):", GUILayout.ExpandWidth(false));
-		GUILayout.Space(10f);
-		MoveCooldownSlider = GUILayout.HorizontalSlider(settings.MoveCooldown, 0f, 20f, GUILayout.Width(140f));
-		GUILayout.Space(10f);
-		CDText = GUILayout.TextField(MoveCooldownSlider.ToString("0.0"), GUILayout.Width(50f));
-		GUILayout.Space(10f);
-		GUILayout.Label("(Default: 10.0)", GUILayout.ExpandWidth(false));
-		if (float.TryParse(CDText, out float MoveCDNew))
-		{
-			if (MoveCDNew > 20f) { MoveCDNew = 20f; }
-			settings.MoveCooldown = MoveCDNew;
-		}
-		GUILayout.EndHorizontal();
-
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Move bark proc chance (%):", GUILayout.ExpandWidth(false));
-		GUILayout.Space(10f);
-		MoveChanceSlider = (int)Math.Round(GUILayout.HorizontalSlider(settings.MoveChance * 100, 0, 100, GUILayout.Width(140f)));
-		GUILayout.Space(10f);
-		ChText = GUILayout.TextField(MoveChanceSlider.ToString(), 3, GUILayout.Width(50f));
-		GUILayout.Space(10f);
-		GUILayout.Label("(Default: 10%)", GUILayout.ExpandWidth(false));
-		if (float.TryParse(ChText, out float MoveChNew))
-		{
-			MoveChNew /= 100;
-			if (MoveChNew > 1f) { MoveChNew = 1f; }
-			settings.MoveChance = MoveChNew;
-		}
-		GUILayout.EndHorizontal();
-
-		if (GUILayout.Button("Apply Changes", GUILayout.ExpandWidth(false)))
-		{
-			if (!float.IsNaN(MoveCDNew) && !float.IsNaN(MoveChNew))
-			{
-				settings.MoveCooldown = MoveCDNew;
-				settings.MoveChance = MoveChNew;
-				log.Log($"Modifying movement bark settings. Cooldown: {MoveCDNew:0.0}s, Chance: {MoveChNew * 100}%");
-				OnSaveGUI(modEntry);
-				HarmonyInstance.UnpatchAll(modEntry.Info.Id);
-				HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
-			}
-		}
-
-		GUILayout.Label("<i>N.B.: May require a game restart to take effect</i>", GUILayout.ExpandWidth(false));
+#if DEBUG
+			log.Log($"DEBUG: {message}");
+#endif
 	}
 
 	// Create a new blueprint component to be added to the barks blueprint. This will be checked to
@@ -129,6 +71,9 @@ public static class Main {
 		[HarmonyPostfix]
 		static void AddAsksListBlueprint()
 		{
+			// Initialise the ModMenu settings.
+			ModMenuSettings.Init();
+
 			string sProjectName = "PC_TWWH_Balthasar_Gelt";
 
 			LocalizationManager.CurrentPack.PutString($"{sProjectName}", "Balthasar Gelt");
@@ -504,11 +449,11 @@ public static class Main {
 							m_ExcludedEtudes = null
 						}
 					],
-					Cooldown = settings.MoveCooldown, // Default Cooldown value is 10s. Make it user-adjustable from 0-20s instead of fixed.
+					Cooldown = ModMenuSettings.GetMoveCooldown(), // Default Cooldown value is 10s. Make it user-adjustable from 0-120s instead of fixed.
 					InterruptOthers = false,
 					DelayMin = 0.0f,
 					DelayMax = 0.0f,
-					Chance = settings.MoveChance, // Default Chance value is 10%. Make it user-adjustable from 0-100% instead of fixed.
+					Chance = ModMenuSettings.GetMoveChance(), // Default Chance value is 10%. Make it user-adjustable from 0-100% instead of fixed.
 					ShowOnScreen = false
 				},
 				Selected = new()
@@ -1059,6 +1004,7 @@ public static class Main {
 			];
 
 				ResourcesLibrary.BlueprintsCache.AddCachedBlueprint(blueprint.AssetGuid, blueprint);
+				blueprint.OnEnable();
 
 				BlueprintRoot.Instance.CharGen.m_MaleVoices = BlueprintRoot.Instance.CharGen.m_MaleVoices
 					.Append(blueprint.ToReference<BlueprintUnitAsksListReference>())
