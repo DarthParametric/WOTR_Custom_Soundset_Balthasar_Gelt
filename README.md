@@ -6,7 +6,7 @@ A mod for Owlcat's Pathfinder: Wrath of the Righteous.
 
 Adds a custom, standalone soundset for male PCs and mercenaries in Wrath of the Righteous, including custom casting lines that replace the vanilla chanting. Does not overwrite or replace any of the vanilla soundsets.
 
-Also includes a couple of custom portrait sets, if required.
+Also provides a couple of [custom portrait sets](https://github.com/DarthParametric/WOTR_Custom_Soundset_Balthasar_Gelt/releases/latest/download/Portraits.zip), if required.
 
 # Install
 1. Download and install [Unity Mod Manager](https://www.nexusmods.com/site/mods/21) and set it up for WOTR ("Pathfinder Second Adventure").
